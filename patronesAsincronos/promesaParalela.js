@@ -23,9 +23,9 @@ function ultimasTransacciones() {
 }
 
 // ? Para poder ejecutarlas al mimo tiempo haremos lo sig
-// ? promise.all nos dice que ejecutara las promesas que le pases
+// ? promise.all nos dice que ejecutara las funciones que le pases
 // ? en un arreglo y los resultados igual te los dara en arreglos
-// ? al terminar la ejecucion de todas las promesas
+// ? al terminar la ejecucion de todas las funciones
 Promise.all([
   mensajesPrivados(),
   galeriaDeFotos(),
