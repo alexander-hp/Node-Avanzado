@@ -1,3 +1,6 @@
 *.docx
 *.txt
 *.zip
+
+# ? Quitar todos los node modules
+**/node_modules
