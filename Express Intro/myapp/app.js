@@ -4,6 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const fs = require('fs');
+const { stat, createReadStream } = require('fs');
+const { promisify } = require('util');
+
+const fileInfo = promisify(stat);
 
 // * Enrutadores
 var indexRouter = require('./routes/index');
@@ -52,6 +56,59 @@ app.get('/descargar/:nombre_usuario', (req, res) => {
       console.log('Descarga ok');
     }
   });
+});
+
+// * peticion para servir un video con mucho carga de banda
+app.use('/video-static', (req, res, next) => {
+  const fileName = __dirname + '/public/video/video.mp4';
+  // ? le vamos a decir que es de tipo mp4 para que lo vea en los headers
+  res.type('video/mp4');
+  res.sendFile(fileName);
+});
+
+// * peticion para servir un video con streams
+app.use('/video-stream', (req, res, next) => {
+  const fileName = __dirname + '/public/video/video.mp4';
+  // ? enviamos en headers status 200 y tipo video mp4
+  res.writeHead(200, {
+    'Content-Type': 'video/mp4',
+  });
+
+  createReadStream(fileName).pipe(res);
+});
+
+// * peticion para servir un video con streams
+app.use('/video-rango', async (req, res, next) => {
+  const fileName = __dirname + '/public/video/video.mp4';
+  const { size } = await fileInfo(fileName);
+  const range = req.headers.range;
+
+  if (range) {
+    // ? definimos el rango que tiene el video
+    let [start, end] = range.replace(/bytes=/, '').split('-');
+    start = parseInt(start, 10);
+    end = end ? parseInt(end, 10) : size - 1;
+
+    // ?
+    res.writeHead(206, {
+      'Content-type': 'video/mp4',
+      'Content-Length': end - start + 1,
+      'Accept-Ranges': 'bytes',
+      'Content-Range': `bytes ${start}-${end}/${size}`,
+    });
+
+    createReadStream(fileName, { start, end }).pipe(res);
+  } else {
+    // ? enviamos en headers status 200 y tipo video mp4
+    res.writeHead(200, {
+      'Content-Type': 'video/mp4',
+      'Content-Length': size,
+    });
+
+    createReadStream(fileName).pipe(res);
+  }
+
+  createReadStream(fileName).pipe(res);
 });
 
 // * RUTAS
