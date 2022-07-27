@@ -1,14 +1,18 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  a(href="/abrirArchivo/Alexander Hdez P") Abrir documento
-  br
-  a(href="/descargar/Alexander Hdez P") Descargar documento
-  br
-  a(href="/video-static") Ver video static
-  br
-  a(href="/video-stream") Ver video con streams
-  br
-  a(href="/video-rango") Ver video con streams con rangos
+  div.container
+
+    h1(class="title is-1") Welcome to #{title}  
+
+    a(href="/abrirArchivo/Alexander Hdez P") Abrir documento
+    br
+    a(href="/descargar/Alexander Hdez P") Descargar documento
+    br
+    a(href="/video-static") Ver video static
+    br
+    a(href="/video-stream") Ver video con streams
+    br
+    a(href="/video-rango") Ver video con streams con rangos
+    br
+    a(href="/formulario") Formulario

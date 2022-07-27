@@ -111,6 +111,20 @@ app.use('/video-rango', async (req, res, next) => {
   createReadStream(fileName).pipe(res);
 });
 
+// * peticion para mandar el render del formulario
+app.get('/formulario', (req, res) => {
+  res.render('formulario');
+});
+
+const upload = require('./middleware/uploadMiddleware');
+
+app.post('/confirmacion', upload.single('photo'), (req, res, next) => {
+  // ? asi imprimimos el cuerpo de la informacion que recibimos
+  // res.send(req.body);
+  // ? mandamos al render y enviamos la informacion
+  res.render('confirmacion', { datos: req.body, files: req.file });
+});
+
 // * RUTAS
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
